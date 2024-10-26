@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import pokemon from "./pokemon.json";
+// import pokemon from "./pokemon.json";
 
 const PokemonRow = ({ pokemon, onSelect }) => (
   <tr>
@@ -57,7 +57,15 @@ PokemonInfo.propTypes = {
 
 function App() {
   const [filter, filterSet] = useState("");
+  const [pokemon, pokemonSet] = useState([]);
   const [selectedItem, selectedItemSet] = useState(null);
+
+  useEffect(() => {
+    fetch("http://localhost:5173/pokemon.json")
+      .then((res) => res.json())
+      .then((data) => pokemonSet(data));
+  }, []);
+
   return (
     <div
       style={{
