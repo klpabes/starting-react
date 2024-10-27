@@ -4,6 +4,8 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import styled from "@emotion/styled";
+import { Button } from "@mui/material";
+
 // import pokemon from "./pokemon.json";
 
 const PokemonRow = ({ pokemon, onSelect }) => (
@@ -11,7 +13,9 @@ const PokemonRow = ({ pokemon, onSelect }) => (
     <td>{pokemon.name.english}</td>
     <td>{pokemon.type.join(", ")}</td>
     <td>
-      <button onClick={() => onSelect(pokemon)}>Select</button>
+      <Button variant="contained" onClick={() => onSelect(pokemon)}>
+        Select
+      </Button>
     </td>
   </tr>
 );
