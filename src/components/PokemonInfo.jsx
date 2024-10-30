@@ -24,7 +24,10 @@ import PokemonContext from "../PokemonContext";
 // PokemonInfo.propTypes = PokemonType;
 
 const PokemonInfo = () => {
-  const { selectedItem } = useContext(PokemonContext);
+  const {
+    state: { selectedItem },
+    dispatch,
+  } = useContext(PokemonContext);
   return selectedItem ? (
     <div>
       <h1>{selectedItem.name.english}</h1>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 
 import styled from "@emotion/styled";
 
@@ -8,6 +8,35 @@ import PokemonInfo from "./components/PokemonInfo";
 import PokemonFilter from "./components/PokemonFilter";
 import PokemonTable from "./components/PokemonTable";
 import PokemonContext from "./PokemonContext";
+
+const pokemonReducer = (
+  state = {
+    pokemon: [],
+    filter: "",
+    selectedItem: null,
+  },
+  action
+) => {
+  switch (action.type) {
+    case "SET_FILTER":
+      return {
+        ...state,
+        filter: action.payload,
+      };
+    case "SET_POKEMON":
+      return {
+        ...state,
+        pokemon: action.payload,
+      };
+    case "SET_SELECTED_ITEM":
+      return {
+        ...state,
+        selectedItem: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
 const Title = styled.h1`
   text-align: center;
@@ -26,25 +55,32 @@ const Container = styled.div`
 `;
 
 function App() {
-  const [filter, filterSet] = useState("");
-  const [pokemon, pokemonSet] = useState([]);
-  const [selectedItem, selectedItemSet] = useState(null);
+  const [state, dispatch] = useReducer(pokemonReducer, {
+    pokemon: [],
+    filter: "",
+    selectedItem: null,
+  });
 
   useEffect(() => {
     fetch("http://localhost:5173/pokemon.json")
       .then((res) => res.json())
-      .then((data) => pokemonSet(data));
+      .then((data) =>
+        dispatch({
+          type: "SET_POKEMON",
+          payload: data,
+        })
+      );
   }, []);
+
+  if (!state.pokemon) {
+    return <div>Loading Data</div>;
+  }
 
   return (
     <PokemonContext.Provider
       value={{
-        filter,
-        pokemon,
-        selectedItem,
-        filterSet,
-        pokemonSet,
-        selectedItemSet,
+        state,
+        dispatch,
       }}
     >
       <Container>
@@ -52,11 +88,7 @@ function App() {
         <TwoColumnLayout>
           <div>
             <PokemonFilter />
-            <PokemonTable
-              pokemon={pokemon}
-              filter={filter}
-              selectedItemSet={selectedItemSet}
-            />
+            <PokemonTable />
           </div>
           <PokemonInfo />
         </TwoColumnLayout>
